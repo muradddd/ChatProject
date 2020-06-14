@@ -7,3 +7,7 @@ app.listen(3000);
 
 // ROUTES
 app.get('/', (req, res) => res.send('goodbye world'));
+const threadsRoute = require('./routes/threads');
+
+// ROUTES MIDDLEWARES
+app.use('/threads', threadsRoute);
