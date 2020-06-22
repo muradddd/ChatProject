@@ -1,0 +1,26 @@
+version: '3.5'
+
+services:
+
+  mongo:
+    container_name: mongo
+    image: mongo:4.0.14-xenial
+    restart: on-failure
+    env_file: 
+      - .env
+    ports:
+      - ${MONGO_PORT}:27017
+    volumes: 
+      - ./.init-mongo.js:/docker-entrypoint-initdb.d/init-mongo-js:ro
+      - ./.mongodb:/data/db
+
+  mongo-express:
+    container_name: mongo-express
+    image: mongo-express:0.49.0
+    restart: on-failure
+    ports:
+      - ${MONGO_EXPRESS_PORT}:8081
+    env_file: 
+      - .env
+    depends_on: 
+      - mongo
