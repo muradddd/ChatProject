@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const TreadSchema = mongoose.Schema({
-    user: {
+    message: {
         type: String,
         required: true,
     },
