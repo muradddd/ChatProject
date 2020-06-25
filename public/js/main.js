@@ -11,18 +11,15 @@ socket.on('message', message => {
 });
 
 
-document.querySelector('form').addEventListener('submit', async e => {
+document.querySelector('form').addEventListener('submit', e => {
     e.preventDefault();
     let msgInput = document.getElementById('msgInput');
     let msg = msgInput.value;
     msgInput.value = '';
     msgInput.focus();
 
-    const response = saveMsg(msg);
-    if (response === 201) {
-        // EMIT MSG TO SERVER
-        socket.emit('chatMsg', msg);
-    });
+    saveMsg(msg);
+});
 
 
 // OUTPUT MST TO DOM
@@ -48,8 +45,38 @@ const saveMsg = async message => {
     try {
         const msgPromise = await fetch(url, settings);
         const msgResponse = await msgPromise.json();
-        return msgPromise.status
+
+        if (msgPromise.status === 201) {
+            // EMIT MSG TO SERVER
+            socket.emit('chatMsg', message);
+        }
     } catch (error) {
         throw error;
     }
 };
+
+// RETRIEVE MSG
+const retrieveMsg = async () => {
+    const url = 'http://localhost:3000/threads';
+    const settings = {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+    }
+
+    try {
+        const msgPromise = await fetch(url, settings);
+        const msgResponse = await msgPromise.json();
+
+        msgResponse.forEach(e => {
+            msg = JSON.stringify(e.message);
+            outputMsg(msg);
+        });
+    } catch (error) {
+        throw error;
+    }
+}
+
+retrieveMsg();
